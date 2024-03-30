@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 const CharacterCount = () => {
   const [userInput, setUserInput] = useState('')
   const [countBreakdown, setCountBreakdown] = useState(null)
+  const [countBreakdownCI, setCountBreakdownCI] = useState(null)
 
   const handleTextChange = (e) => {
     const textFieldValue = e.target.value
@@ -30,37 +31,24 @@ const CharacterCount = () => {
     }
   }
 
-  const alphabetizeCaseSensitive = (newObject) => {
-
-    if (newObject) {
-      let sortedObject = {}
-
-      Object.keys(newObject)
-        .sort((a, b) => {
-          
-          return a.localeCompare(b)
-        })
-        .forEach((key) => {
-          sortedObject[key] = newObject[key]
-        })
-      return sortedObject
-    } else {
-      return null
-    }
-  }
-
-  useEffect(() => {
-    const str = userInput
+  const makeObject = (newString) => {
     let result = {} 
-    for (let i = 0; i< str.length; i++) { 
-      let ch = str.charAt(i) 
+    for (let i = 0; i< newString.length; i++) { 
+      let ch = newString.charAt(i) 
       if(!result[ch]) { 
         result[ch] =1 
       } else { 
         result[ch]+=1
       } 
     }
-    setCountBreakdown(result)
+    return result
+  }
+
+  useEffect(() => {
+    const str = userInput
+    const strCaseInsensitive = userInput.toLowerCase()
+    setCountBreakdown(makeObject(str))
+    setCountBreakdownCI(makeObject(strCaseInsensitive))
   }, [userInput])
 
   return (
@@ -76,8 +64,10 @@ const CharacterCount = () => {
       </form>
       
       <div id="count-output">
-      <h2>Case Insensitive</h2>
+        <h2>Case Sensitive</h2>
         <pre className="results">{displayCounts(alphabetize(countBreakdown))}</pre>
+        <h2>Case Insensitive</h2>
+        <pre className="results">{displayCounts(alphabetize(countBreakdownCI))}</pre>
       </div>
     </div>
   )
