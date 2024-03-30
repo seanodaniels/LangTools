@@ -40,7 +40,7 @@ const CharacterCount = () => {
         </label>
       </form>
       <div id="count-output">
-        <pre>{displayCounts(countBreakdown)}</pre>
+        <pre className="results">{displayCounts(countBreakdown)}</pre>
       </div>
     </div>
   )
