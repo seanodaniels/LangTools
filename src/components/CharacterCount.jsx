@@ -9,8 +9,44 @@ const CharacterCount = () => {
     setUserInput(textFieldValue)
   }
 
-  const displayCounts = (countObject) => {
-    return JSON.stringify(countObject, null, 2)
+  const displayCounts = (newObject) => {
+    return JSON.stringify(newObject, null, 2)
+  }
+
+  const alphabetize = (newObject) => {
+
+    if (newObject) {
+      
+      let sortedObject = {}
+
+      Object.keys(newObject).sort((a, b) => {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      }).forEach(function(key) {
+        sortedObject[key] = newObject[key];
+      })
+      return sortedObject
+    } else {
+      return null
+    }
+  }
+
+  const alphabetizeCaseSensitive = (newObject) => {
+
+    if (newObject) {
+      let sortedObject = {}
+
+      Object.keys(newObject)
+        .sort((a, b) => {
+          
+          return a.localeCompare(b)
+        })
+        .forEach((key) => {
+          sortedObject[key] = newObject[key]
+        })
+      return sortedObject
+    } else {
+      return null
+    }
   }
 
   useEffect(() => {
@@ -24,7 +60,6 @@ const CharacterCount = () => {
         result[ch]+=1
       } 
     }
-    console.log("The occurrence of each letter in given string is:",result)
     setCountBreakdown(result)
   }, [userInput])
 
@@ -39,8 +74,10 @@ const CharacterCount = () => {
           <textarea value={userInput} onChange={handleTextChange} />
         </label>
       </form>
+      
       <div id="count-output">
-        <pre className="results">{displayCounts(countBreakdown)}</pre>
+      <h2>Case Insensitive</h2>
+        <pre className="results">{displayCounts(alphabetize(countBreakdown))}</pre>
       </div>
     </div>
   )
