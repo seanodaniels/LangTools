@@ -60,6 +60,7 @@ table.count-result-table th {
   font-size: 1rem;
   font-weight: normal;
   text-align: center;
+  text-decoration: underline;
 }
 
 @keyframes logo-spin {

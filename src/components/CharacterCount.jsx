@@ -4,6 +4,8 @@ const CharacterCount = () => {
   const [userInput, setUserInput] = useState('')
   const [countBreakdown, setCountBreakdown] = useState(null)
   const [countBreakdownCI, setCountBreakdownCI] = useState(null)
+  const [sortToggle, setSortToggle] = useState('CHAR')
+  const [sortToggleCI, setSortToggleCI] = useState('CHAR')
 
   const handleTextChange = (e) => {
     const textFieldValue = e.target.value
@@ -14,19 +16,33 @@ const CharacterCount = () => {
     // const stringified = JSON.stringify(newObject, null, 2)
     if (newObject) {
       const newArr = Object.entries(newObject)
-      console.log('newArr', newArr)
+      // console.log('newArr', newArr)
       return newArr
     }
 
   }
 
-  const alphabetize = (newObject) => {
+  const sortByKey = (newObject) => {
     if (newObject) {      
       let sortedObject = {}
       Object.keys(newObject).sort((a, b) => {
         return a.toLowerCase().localeCompare(b.toLowerCase());
       }).forEach(function(key) {
         sortedObject[key] = newObject[key];
+      })
+      return sortedObject
+    } else {
+      return null
+    }
+  }
+
+  const sortByValue = (newObject) => {
+    if (newObject) {      
+      let sortedObject = {}
+      Object.keys(newObject).sort((a, b) => {
+        return newObject[b] - newObject[a]
+      }).forEach(function(key) {
+        sortedObject[key] = newObject[key]
       })
       return sortedObject
     } else {
@@ -47,20 +63,60 @@ const CharacterCount = () => {
     return result
   }
 
+  const handleSortChar = () => {
+    setSortToggle('CHAR')
+  }
+
+  const handleSortVAL = () => {
+    setSortToggle('VAL')
+  }
+
+  const handleSortCharCI = () => {
+    setSortToggleCI('CHAR')
+  }
+
+  const handleSortVALCI = () => {
+    setSortToggleCI('VAL')
+  }
+
   const DisplayCountTable = ({countArr}) => {
     if (countArr) {
     return (
       <table className="count-result-table">
+        <thead>
         <tr>
-          <th>Character</th>
-          <th>Count</th>
+          <th><span onClick={handleSortChar}>Character</span></th>
+          <th><span onClick={handleSortVAL}>Count</span></th>
         </tr>
+        </thead>
+        <tbody>
       {
         countArr.map(pair => 
           <tr key={pair}>
             {pair.map(item => <td key={item}>{item}</td>)}
           </tr>)
-      }</table>
+      }</tbody></table>
+      )
+    }
+  }
+
+  const DisplayCountTableCI = ({countArr}) => {
+    if (countArr) {
+    return (
+      <table className="count-result-table">
+        <thead>
+        <tr>
+          <th><span onClick={handleSortCharCI}>Character</span></th>
+          <th><span onClick={handleSortVALCI}>Count</span></th>
+        </tr>
+        </thead>
+        <tbody>
+      {
+        countArr.map(pair => 
+          <tr key={pair}>
+            {pair.map(item => <td key={item}>{item}</td>)}
+          </tr>)
+      }</tbody></table>
       )
     }
   }
@@ -83,16 +139,30 @@ const CharacterCount = () => {
         </label>
       </form>
 
-      <h2>Results</h2>
-      
-      <div id="count-output">
-          
-        <p><strong>Case Sensitive</strong></p>
-        <DisplayCountTable countArr={displayCounts(alphabetize(countBreakdown))} /> 
+      { userInput 
+        ?
+        <div>
 
-        <p><strong>Case Insensitive</strong></p>
-        <DisplayCountTable countArr={displayCounts(alphabetize(countBreakdownCI))} /> 
-      </div>
+          <h2>Results</h2>
+          
+          <div id="count-output">
+              
+            <p><strong>Case Sensitive</strong></p>
+            { sortToggle === 'CHAR'
+              ? <DisplayCountTable countArr={displayCounts(sortByKey(countBreakdown))} /> 
+              : <DisplayCountTable countArr={displayCounts(sortByValue(countBreakdown))} />
+            }
+
+            <p><strong>Case Insensitive</strong></p>
+            { sortToggleCI === 'CHAR'
+              ? <DisplayCountTableCI countArr={displayCounts(sortByKey(countBreakdownCI))} /> 
+              : <DisplayCountTableCI countArr={displayCounts(sortByValue(countBreakdownCI))} />
+            }
+          </div>
+        </div>
+        : null 
+      }
+
     </div>
   )
 }
