@@ -79,7 +79,7 @@ const CharacterCount = () => {
 
       <form>
         <label>
-          <textarea value={userInput} onChange={handleTextChange} />
+          <textarea value={userInput} onChange={handleTextChange} rows="15" cols="70"/>
         </label>
       </form>
 
