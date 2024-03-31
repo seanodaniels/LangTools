@@ -40,6 +40,28 @@ pre.results {
   text-decoration: underline;
 }
 
+table.count-result-table {
+  border: 1px solid #444444;
+  border-collapse: collapse;
+
+}
+
+table.count-result-table td {
+  border: 1px solid #444444;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+table.count-result-table th {
+  border: 1px solid #666666;
+  background-color: #444444;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: normal;
+  text-align: center;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
