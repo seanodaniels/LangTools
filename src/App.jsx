@@ -23,11 +23,13 @@ const App = () => {
       <div id="nav-primary">
         <NavPrimary />
       </div>
+      <div id="page-contents">
       <h1>Lang<strong>Tools</strong></h1>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/character-count" element={<CharacterCount />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/character-count" element={<CharacterCount />} />
+        </Routes>
+      </div>
     </div>
   )
 }

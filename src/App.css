@@ -63,6 +63,32 @@ table.count-result-table th {
   text-decoration: underline;
 }
 
+div#page-character-count {
+  display: flex;
+  flex-basis: 400px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+div.user-input-area {
+  margin-right: 1rem;
+}
+
+div.character-count-output {}
+
+#count-output {
+  display: flex;
+  flex-basis: 200px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+div.character-count-output .table-display {
+  margin: 0 1rem 1rem 1rem;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

@@ -2,52 +2,12 @@ import { useState, useEffect } from 'react'
 
 const CharacterCount = () => {
   const [userInput, setUserInput] = useState('')
-  const [countBreakdown, setCountBreakdown] = useState(null)
+  const [countBreakdown, setCountBreakdown] = useState(null) // object
   const [countBreakdownCI, setCountBreakdownCI] = useState(null)
-  const [sortToggle, setSortToggle] = useState('CHAR')
-  const [sortToggleCI, setSortToggleCI] = useState('CHAR')
 
   const handleTextChange = (e) => {
     const textFieldValue = e.target.value
     setUserInput(textFieldValue)
-  }
-
-  const displayCounts = (newObject) => {
-    // const stringified = JSON.stringify(newObject, null, 2)
-    if (newObject) {
-      const newArr = Object.entries(newObject)
-      // console.log('newArr', newArr)
-      return newArr
-    }
-
-  }
-
-  const sortByKey = (newObject) => {
-    if (newObject) {      
-      let sortedObject = {}
-      Object.keys(newObject).sort((a, b) => {
-        return a.toLowerCase().localeCompare(b.toLowerCase());
-      }).forEach(function(key) {
-        sortedObject[key] = newObject[key];
-      })
-      return sortedObject
-    } else {
-      return null
-    }
-  }
-
-  const sortByValue = (newObject) => {
-    if (newObject) {      
-      let sortedObject = {}
-      Object.keys(newObject).sort((a, b) => {
-        return newObject[b] - newObject[a]
-      }).forEach(function(key) {
-        sortedObject[key] = newObject[key]
-      })
-      return sortedObject
-    } else {
-      return null
-    }
   }
 
   const makeObject = (newString) => {
@@ -63,60 +23,81 @@ const CharacterCount = () => {
     return result
   }
 
-  const handleSortChar = () => {
-    setSortToggle('CHAR')
-  }
+  const LetterDataTable = ({tableData}) => {
+    // console.log('tableSort', tableSort)
+    const [ sortBy, setSortBy ] = useState('CHARACTER')
+    const [ tableDataArr, setTableDataArr ] = useState(null)
 
-  const handleSortVAL = () => {
-    setSortToggle('VAL')
-  }
-
-  const handleSortCharCI = () => {
-    setSortToggleCI('CHAR')
-  }
-
-  const handleSortVALCI = () => {
-    setSortToggleCI('VAL')
-  }
-
-  const DisplayCountTable = ({countArr}) => {
-    if (countArr) {
-    return (
-      <table className="count-result-table">
-        <thead>
-        <tr>
-          <th><span onClick={handleSortChar}>Character</span></th>
-          <th><span onClick={handleSortVAL}>Count</span></th>
-        </tr>
-        </thead>
-        <tbody>
-      {
-        countArr.map(pair => 
-          <tr key={pair}>
-            {pair.map(item => <td key={item}>{item}</td>)}
-          </tr>)
-      }</tbody></table>
-      )
+    const sortTableByKey = (newObject) => {
+      if (newObject) {      
+        let sortedObject = {}
+        Object.keys(newObject).sort((a, b) => {
+          return a.toLowerCase().localeCompare(b.toLowerCase());
+        }).forEach(function(key) {
+          sortedObject[key] = newObject[key];
+        })
+        return sortedObject
+      } else {
+        return null
+      }
     }
-  }
+  
+    const sortTableByValue = (newObject) => {
+      if (newObject) {      
+        let sortedObject = {}
+        Object.keys(newObject).sort((a, b) => {
+          return newObject[b] - newObject[a]
+        }).forEach(function(key) {
+          sortedObject[key] = newObject[key]
+        })
+        return sortedObject
+      } else {
+        return null
+      }
+    }
 
-  const DisplayCountTableCI = ({countArr}) => {
-    if (countArr) {
-    return (
-      <table className="count-result-table">
-        <thead>
-        <tr>
-          <th><span onClick={handleSortCharCI}>Character</span></th>
-          <th><span onClick={handleSortVALCI}>Count</span></th>
-        </tr>
-        </thead>
-        <tbody>
-      {
-        countArr.map(pair => 
-          <tr key={pair}>
-            {pair.map(item => <td key={item}>{item}</td>)}
-          </tr>)
-      }</tbody></table>
+    const objToArr = (newObject) => {
+      // Convert an object into an array we can manipulate
+      // const stringified = JSON.stringify(newObject, null, 2)
+      if (newObject) {
+        const newArr = Object.entries(newObject)
+        // console.log('newArr', newArr)
+        return newArr
+      }    
+    }
+
+    const handleSortByKey = () => {
+      setSortBy('CHARACTER')
+    }
+
+    const handleSortByVal = () => {
+      setSortBy('COUNT')
+    }
+
+    useEffect(() => {
+      console.log('sortBy', sortBy)
+      sortBy === 'CHARACTER'
+        ? setTableDataArr(objToArr(sortTableByKey(tableData)))
+        : setTableDataArr(objToArr(sortTableByValue(tableData)))
+    }, [sortBy])
+
+    if (tableData && tableDataArr) {
+      return (
+        <table className="count-result-table">
+          <thead>
+          <tr>
+            <th><span onClick={handleSortByKey}>Character</span></th>
+            <th><span onClick={handleSortByVal}>Count</span></th>
+          </tr>
+          </thead>
+          <tbody>
+        {
+          tableDataArr.map(pair => 
+            <tr key={`l${pair[0]}`} className={pair}>
+              <td>{pair[0]}</td>
+              <td>{pair[1]}</td>
+            </tr>)
+        }</tbody></table>
       )
     }
   }
@@ -130,6 +111,9 @@ const CharacterCount = () => {
 
   return (
     <div id="page-character-count">
+      
+
+      <div className="user-input-area">
       <h2>Character Count</h2>
       <p>Enter your text.</p>      
 
@@ -139,29 +123,36 @@ const CharacterCount = () => {
         </label>
       </form>
 
-      { userInput 
-        ?
-        <div>
+      </div>
+      <div className="character-count-output">
 
-          <h2>Results</h2>
-          
-          <div id="count-output">
-              
-            <p><strong>Case Sensitive</strong></p>
-            { sortToggle === 'CHAR'
-              ? <DisplayCountTable countArr={displayCounts(sortByKey(countBreakdown))} /> 
-              : <DisplayCountTable countArr={displayCounts(sortByValue(countBreakdown))} />
-            }
+        { userInput 
+          ?
+          <div>
 
-            <p><strong>Case Insensitive</strong></p>
-            { sortToggleCI === 'CHAR'
-              ? <DisplayCountTableCI countArr={displayCounts(sortByKey(countBreakdownCI))} /> 
-              : <DisplayCountTableCI countArr={displayCounts(sortByValue(countBreakdownCI))} />
-            }
+            <h2>Results</h2>
+            
+            <div id="count-output">
+
+              <div className="table-display case-sensitive-output">
+
+                <p><strong>Case Sensitive</strong></p>
+                <LetterDataTable tableData={countBreakdown} />
+
+              </div>
+
+              <div className="table-display case-insensitive-output">
+                
+                <p><strong>Case insensitive</strong></p>
+                <LetterDataTable tableData={countBreakdownCI} />
+
+              </div>
+                
+            </div>
           </div>
-        </div>
-        : null 
-      }
+          : null 
+        }
+      </div>
 
     </div>
   )
